@@ -1,0 +1,86 @@
+{% extends 'home/base.html' %}
+
+{% block title %}首页 - {{ profile.name }}{% endblock %}
+
+{% block content %}
+    {% if profile %}
+    <div class="profile-section">
+        {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="profile-avatar">
+        {% else %}
+        <div class="profile-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; margin: 0 auto 20px;">
+            {{ profile.name.0 }}
+        </div>
+        {% endif %}
+        
+        <h1 class="profile-name">{{ profile.name }}</h1>
+        <p class="profile-title">{{ profile.title }}</p>
+        <p class="profile-bio">{{ profile.bio }}</p>
+        
+        <div class="social-links">
+            {% if profile.github_url %}
+            <a href="{{ profile.github_url }}" class="btn">GitHub</a>
+            {% endif %}
+            {% if profile.linkedin_url %}
+            <a href="{{ profile.linkedin_url }}" class="btn">LinkedIn</a>
+            {% endif %}
+            <a href="mailto:{{ profile.email }}" class="btn">Email</a>
+        </div>
+        
+        {% if profile.location %}
+        <p style="margin-top: 20px; color: #666;">
+            📍 {{ profile.location }}
+        </p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 40px;">
+        <h2>欢迎来到我的个人主页</h2>
+        <p>个人信息尚未配置，请登录后台管理系统添加。</p>
+    </div>
+    {% endif %}
+
+    {% if featured_projects %}
+    <h2 style="margin-top: 50px;">推荐项目</h2>
+    <div class="grid">
+        {% for project in featured_projects %}
+        <div class="card">
+            {% if project.image %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 15px;">
+            {% endif %}
+            <h3>{{ project.title }}</h3>
+            <p style="color: #666; margin-bottom: 15px;">{{ project.description|truncatewords:30 }}</p>
+            <div style="margin-bottom: 15px;">
+                {% for tech in project.technologies.split|slice:":5" %}
+                <span class="tag">{{ tech }}</span>
+                {% endfor %}
+            </div>
+            <a href="{% url 'project_detail' project.id %}" class="btn">查看详情</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/projects/" class="btn">查看所有项目</a>
+    </div>
+    {% endif %}
+
+    {% if recent_posts %}
+    <h2 style="margin-top: 50px;">最新文章</h2>
+    <div class="grid">
+        {% for post in recent_posts %}
+        <div class="card">
+            {% if post.cover_image %}
+            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 15px;">
+            {% endif %}
+            <h3>{{ post.title }}</h3>
+            <p style="color: #999; font-size: 14px; margin-bottom: 10px;">{{ post.created_at|date:"Y-m-d" }}</p>
+            <p style="color: #666; margin-bottom: 15px;">{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+            <a href="{% url 'blog_detail' post.slug %}" class="btn">阅读更多</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/blog/" class="btn">查看所有文章</a>
+    </div>
+    {% endif %}
+{% endblock %}

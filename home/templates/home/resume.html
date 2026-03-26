@@ -1,0 +1,298 @@
+{% extends 'home/base.html' %}
+
+{% block title %}简历 - {{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="resume-container">
+    <div class="resume-header">
+        <h1>{{ profile.name }}</h1>
+        <p class="resume-title">{{ profile.title }}</p>
+        
+        <div class="contact-info">
+            <p><strong>邮箱：</strong>{{ profile.email }}</p>
+            {% if profile.phone %}
+            <p><strong>电话：</strong>{{ profile.phone }}</p>
+            {% endif %}
+            {% if profile.location %}
+            <p><strong>所在地：</strong>{{ profile.location }}</p>
+            {% endif %}
+            <div class="social-links-resume">
+                {% if profile.github_url %}
+                <a href="{{ profile.github_url }}" target="_blank" class="btn">GitHub</a>
+                {% endif %}
+                {% if profile.linkedin_url %}
+                <a href="{{ profile.linkedin_url }}" target="_blank" class="btn">LinkedIn</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <section class="resume-section">
+        <h2>个人简介</h2>
+        <div class="section-content">
+            <p>{{ profile.bio }}</p>
+        </div>
+    </section>
+
+    {% if experiences %}
+    <section class="resume-section">
+        <h2>工作经历</h2>
+        <div class="section-content">
+            {% for exp in experiences %}
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3>{{ exp.position }}</h3>
+                    <span class="company-name">{{ exp.company }}</span>
+                </div>
+                <div class="experience-date">
+                    {% if exp.is_current %}
+                    {{ exp.start_date|date:"Y年m月" }} - 至今
+                    {% else %}
+                    {{ exp.start_date|date:"Y年m月" }} - {{ exp.end_date|date:"Y年m月" }}
+                    {% endif %}
+                </div>
+                <div class="experience-description">
+                    <p>{{ exp.description }}</p>
+                </div>
+                {% if exp.technologies %}
+                <div class="technologies">
+                    <strong>技术栈：</strong>
+                    {% for tech in exp.technologies.split(',') %}
+                    <span class="tag">{{ tech|strip }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if educations %}
+    <section class="resume-section">
+        <h2>教育经历</h2>
+        <div class="section-content">
+            {% for edu in educations %}
+            <div class="education-item">
+                <div class="education-header">
+                    <h3>{{ edu.school }}</h3>
+                    <span class="degree">{{ edu.degree }}</span>
+                    <span class="major">{{ edu.major }}</span>
+                </div>
+                <div class="education-date">
+                    {% if edu.end_date %}
+                    {{ edu.start_date|date:"Y年m月" }} - {{ edu.end_date|date:"Y年m月" }}
+                    {% else %}
+                    {{ edu.start_date|date:"Y年m月" }} - 至今
+                    {% endif %}
+                </div>
+                {% if edu.gpa %}
+                <p><strong>GPA：</strong>{{ edu.gpa }}</p>
+                {% endif %}
+                {% if edu.description %}
+                <p>{{ edu.description }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if featured_projects %}
+    <section class="resume-section">
+        <h2>项目经验</h2>
+        <div class="section-content">
+            {% for project in featured_projects %}
+            <div class="project-item">
+                <h3>{{ project.title }}</h3>
+                <p class="project-description">{{ project.description }}</p>
+                <div class="technologies">
+                    {% for tech in project.technologies.split(',') %}
+                    <span class="tag">{{ tech|strip }}</span>
+                    {% endfor %}
+                </div>
+                <div class="project-links">
+                    {% if project.github_url %}
+                    <a href="{{ project.github_url }}" target="_blank" class="btn">GitHub</a>
+                    {% endif %}
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" class="btn">在线演示</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<style>
+    .resume-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .resume-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .resume-header h1 {
+        font-size: 42px;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+
+    .resume-title {
+        font-size: 22px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .contact-info {
+        color: #555;
+        line-height: 2;
+    }
+
+    .contact-info p {
+        margin: 5px 0;
+    }
+
+    .social-links-resume {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid #667eea;
+        margin: 30px 0;
+    }
+
+    .resume-section {
+        margin-bottom: 40px;
+    }
+
+    .resume-section h2 {
+        font-size: 28px;
+        color: #667eea;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .section-content {
+        padding-left: 20px;
+    }
+
+    .experience-item,
+    .education-item,
+    .project-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+    }
+
+    .experience-header,
+    .education-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .experience-header h3,
+    .education-header h3 {
+        font-size: 20px;
+        color: #333;
+        margin: 0;
+    }
+
+    .company-name,
+    .degree,
+    .major {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .experience-date,
+    .education-date {
+        color: #999;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .experience-description,
+    .project-description {
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    .technologies {
+        margin: 15px 0;
+    }
+
+    .technologies strong {
+        margin-right: 10px;
+    }
+
+    .project-links {
+        margin-top: 15px;
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #667eea;
+        color: white;
+        border-radius: 15px;
+        font-size: 12px;
+        margin: 3px;
+    }
+
+    @media print {
+        body {
+            background: white;
+        }
+
+        .container {
+            padding: 0;
+        }
+
+        header,
+        footer {
+            display: none;
+        }
+
+        .main-content {
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .btn {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .resume-header h1 {
+            font-size: 32px;
+        }
+
+        .experience-header,
+        .education-header {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
